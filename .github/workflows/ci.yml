@@ -7,6 +7,22 @@ on:
 jobs:
   migraciones:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: guitarcoach
+          POSTGRES_PASSWORD: guitarcoach
+          POSTGRES_DB: guitarcoach
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U guitarcoach -d guitarcoach"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://guitarcoach:guitarcoach@localhost:5432/guitarcoach
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
