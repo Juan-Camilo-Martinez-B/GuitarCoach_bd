@@ -43,10 +43,16 @@ python scripts/migrate.py
 
 Los scripts registran la versión aplicada en `schema_migrations`. Cada archivo se ejecuta en su propia transacción confirmada al terminar.
 
+Las semillas de desarrollo crean un alumno, una progresión de cuatro acordes y un intento. El hash de contraseña es un marcador, no una credencial usable:
+
+```powershell
+python scripts/seed.py
+```
+
 ## Integración continua
 
 El workflow `.github/workflows/ci.yml` instala las dependencias de desarrollo y ejecuta `pytest` en cada push. Las pruebas que necesitan Postgres se añaden cuando el esquema tenga restricciones que comprobar.
 
 ## Estado
 
-Fase 1 lista para fusionar: convenciones, Postgres local, scripts, extensiones, usuarios y CI.
+Fase 2: tablas de canciones, intentos, métricas, informes y trabajos, con búsqueda `pg_trgm` y semillas de desarrollo.
