@@ -2,69 +2,47 @@
 
 Esquema PostgreSQL 16 de GuitarCoach AI. Este repositorio es la fuente de verdad del modelo de datos. El backend se mapea a estas migraciones y no genera las suyas.
 
-El audio del estudiante no se almacena. Solo viven aquí usuarios, canciones, intentos, métricas, informes y trabajos de scraping.
+El audio del estudiante no se almacena. Aquí viven usuarios, canciones, intentos, métricas por acorde, informes del tutor y trabajos de scraping.
 
-## Convenciones de migración
+## Cómo ejecutarlo
 
-- Cada cambio va en un par `migrations/NNNN_descripcion.up.sql` y `migrations/NNNN_descripcion.down.sql`.
-- `NNNN` es un correlativo de cuatro dígitos. El nombre describe un solo cambio lógico (una tabla, un índice o una restricción).
-- `up` aplica el cambio y `down` lo revierte por completo.
-- Las migraciones son SQL plano. No se usan migraciones generadas por un ORM.
-- Toda tabla lleva claves primarias, foráneas, `CHECK` cuando la regla cabe en el esquema, e índices para las consultas previstas.
-- La búsqueda de canciones usa `pg_trgm`. Los identificadores de usuario, intento, informe y trabajo usan `uuid` (`pgcrypto`).
+Requisitos: Docker y Python 3.12.
 
-## Postgres local
-
-```bash
+```powershell
 docker compose up -d
+python -m pip install -r requirements-dev.txt
+$env:DATABASE_URL = "postgresql://guitarcoach:guitarcoach@localhost:54329/guitarcoach"
+python scripts/migrate.py
+python scripts/seed.py
+python scripts/seed_demo.py
+python scripts/verify.py
+pytest
 ```
 
-El puerto por defecto es `54329`, para no chocar con un PostgreSQL ya instalado. La contraseña de desarrollo está en `.env.example`. No uses esos valores en producción.
+Otros comandos:
 
-## Migraciones
-
-Con el contenedor en marcha y `DATABASE_URL` exportada:
-
-```bash
-pip install -r requirements-dev.txt
-python scripts/migrate.py
+```powershell
 python scripts/rollback.py
 python scripts/rollback.py 2
 python scripts/reset.py
-pytest tests/test_sql_split.py
 ```
 
-En PowerShell, carga la variable antes de migrar:
+El puerto local es `54329`. La contraseña de desarrollo está en `.env.example` y no sirve para producción.
 
-```powershell
-$env:DATABASE_URL = "postgresql://guitarcoach:guitarcoach@localhost:54329/guitarcoach"
-python scripts/migrate.py
-```
+## Convenciones
 
-Los scripts registran la versión aplicada en `schema_migrations`. Cada archivo se ejecuta en su propia transacción confirmada al terminar.
+- Cada cambio es un par `migrations/NNNN_descripcion.up.sql` y `.down.sql`.
+- `up` aplica un cambio lógico y `down` lo revierte.
+- El historial queda en `schema_migrations`.
+- La búsqueda de canciones usa `pg_trgm`. Los identificadores de usuario, intento, informe y trabajo son `uuid`.
 
-Las semillas de desarrollo crean un alumno, una progresión de cuatro acordes y un intento. El hash de contraseña es un marcador, no una credencial usable:
+## Objetos de consulta
 
-```powershell
-python scripts/seed.py
-python scripts/seed_demo.py
-```
+- Vista `chord_accuracy_summary`: precisión, desfase y errores agrupados por acorde.
+- Función `problematic_transitions()`: pares de acordes consecutivos en los que el segundo no coincidió con lo esperado.
 
-`seed_demo.py` añade dos alumnos de demostración y una progresión con un intento. Se puede ejecutar otra vez sin duplicar filas. Los hash de contraseña son marcadores, no credenciales.
+El diagrama está en [schema/erd.md](schema/erd.md). Variables, variante gratuita de base de datos y alertas de presupuesto están en [docs/despliegue.md](docs/despliegue.md).
 
 ## Integración continua
 
-El workflow `.github/workflows/ci.yml` levanta PostgreSQL 16, aplica las migraciones desde las pruebas y comprueba las restricciones.
-
-En local, con el contenedor en marcha:
-
-```powershell
-$env:DATABASE_URL = "postgresql://guitarcoach:guitarcoach@localhost:54329/guitarcoach"
-pip install -r requirements-dev.txt
-pytest
-python scripts/verify.py
-```
-
-## Estado
-
-Fase 3: los usuarios aceptan contraseña u OAuth y guardan la calibración de latencia. Las pruebas de restricciones corren contra PostgreSQL.
+`.github/workflows/ci.yml` levanta PostgreSQL 16, migra, revierte y comprueba restricciones, índices y semillas de demostración.
