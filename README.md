@@ -43,6 +43,10 @@ python scripts/migrate.py
 
 Los scripts registran la versión aplicada en `schema_migrations`. Cada archivo se ejecuta en su propia transacción confirmada al terminar.
 
+## Integración continua
+
+El workflow `.github/workflows/ci.yml` instala las dependencias de desarrollo y ejecuta `pytest` en cada push. Las pruebas que necesitan Postgres se añaden cuando el esquema tenga restricciones que comprobar.
+
 ## Estado
 
-Fase 1 en curso: Postgres local y scripts listos. Faltan las migraciones de esquema y la CI.
+Fase 1 lista para fusionar: convenciones, Postgres local, scripts, extensiones, usuarios y CI.
