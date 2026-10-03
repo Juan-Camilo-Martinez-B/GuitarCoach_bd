@@ -1,11 +1,18 @@
 # GuitarCoach Database
 
-Esquema PostgreSQL de GuitarCoach AI: migraciones, semillas y pruebas del esquema.
+Esquema PostgreSQL 16 de GuitarCoach AI. Este repositorio es la fuente de verdad del modelo de datos. El backend se mapea a estas migraciones y no genera las suyas.
 
-Este repositorio está en la **Fase 0**: solo contiene la estructura de carpetas y archivos marcador. No hay SQL, scripts ni configuración de ejecución.
+El audio del estudiante no se almacena. Solo viven aquí usuarios, canciones, intentos, métricas, informes y trabajos de scraping.
 
-El backend consumirá este esquema por contrato. No generará migraciones por su cuenta.
+## Convenciones de migración
 
-## Siguiente paso
+- Cada cambio va en un par `migrations/NNNN_descripcion.up.sql` y `migrations/NNNN_descripcion.down.sql`.
+- `NNNN` es un correlativo de cuatro dígitos. El nombre describe un solo cambio lógico (una tabla, un índice o una restricción).
+- `up` aplica el cambio y `down` lo revierte por completo.
+- Las migraciones son SQL plano. No se usan migraciones generadas por un ORM.
+- Toda tabla lleva claves primarias, foráneas, `CHECK` cuando la regla cabe en el esquema, e índices para las consultas previstas.
+- La búsqueda de canciones usa `pg_trgm`. Los identificadores de usuario, intento, informe y trabajo usan `uuid` (`pgcrypto`).
 
-Inicializar Git en esta carpeta, vincular el remoto de GitHub y crear el primer commit. La implementación empieza al confirmar la Fase 1.
+## Estado
+
+Fase 0 más las convenciones de este documento. Las migraciones y el Postgres local llegan en los commits siguientes de la Fase 1.
