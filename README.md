@@ -21,6 +21,28 @@ docker compose up -d
 
 El puerto por defecto es `54329`, para no chocar con un PostgreSQL ya instalado. La contraseña de desarrollo está en `.env.example`. No uses esos valores en producción.
 
+## Migraciones
+
+Con el contenedor en marcha y `DATABASE_URL` exportada:
+
+```bash
+pip install -r requirements-dev.txt
+python scripts/migrate.py
+python scripts/rollback.py
+python scripts/rollback.py 2
+python scripts/reset.py
+pytest tests/test_sql_split.py
+```
+
+En PowerShell, carga la variable antes de migrar:
+
+```powershell
+$env:DATABASE_URL = "postgresql://guitarcoach:guitarcoach@localhost:54329/guitarcoach"
+python scripts/migrate.py
+```
+
+Los scripts registran la versión aplicada en `schema_migrations`. Cada archivo se ejecuta en su propia transacción confirmada al terminar.
+
 ## Estado
 
-Fase 1 en curso: Postgres local listo. Los scripts y las migraciones llegan en los commits siguientes.
+Fase 1 en curso: Postgres local y scripts listos. Faltan las migraciones de esquema y la CI.
