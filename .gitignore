@@ -1,0 +1,9 @@
+# Secretos y datos locales
+.env
+.pgdata/
+pgdata/
+
+# Sistema
+*.log
+.DS_Store
+Thumbs.db
