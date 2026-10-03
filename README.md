@@ -51,8 +51,17 @@ python scripts/seed.py
 
 ## Integración continua
 
-El workflow `.github/workflows/ci.yml` instala las dependencias de desarrollo y ejecuta `pytest` en cada push. Las pruebas que necesitan Postgres se añaden cuando el esquema tenga restricciones que comprobar.
+El workflow `.github/workflows/ci.yml` levanta PostgreSQL 16, aplica las migraciones desde las pruebas y comprueba las restricciones.
+
+En local, con el contenedor en marcha:
+
+```powershell
+$env:DATABASE_URL = "postgresql://guitarcoach:guitarcoach@localhost:54329/guitarcoach"
+pip install -r requirements-dev.txt
+pytest
+python scripts/verify.py
+```
 
 ## Estado
 
-Fase 2: tablas de canciones, intentos, métricas, informes y trabajos, con búsqueda `pg_trgm` y semillas de desarrollo.
+Fase 3: los usuarios aceptan contraseña u OAuth y guardan la calibración de latencia. Las pruebas de restricciones corren contra PostgreSQL.
