@@ -194,8 +194,12 @@ def _ensure_history(connection: object) -> None:
 
 
 def _execute_script(connection: object, script: str) -> None:
-    for statement in split_sql(script):
-        connection.execute(statement)  # type: ignore[attr-defined]
+    try:
+        for statement in split_sql(script):
+            connection.execute(statement)  # type: ignore[attr-defined]
+    except Exception:
+        connection.rollback()  # type: ignore[attr-defined]
+        raise
 
 
 def _dollar_tag_at(script: str, index: int) -> str | None:

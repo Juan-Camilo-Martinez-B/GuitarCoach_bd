@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
-from migration_lib import paired_migrations, split_sql
+from migration_lib import _execute_script, paired_migrations, split_sql
 
 
 def test_separa_sentencias_simples() -> None:
@@ -33,6 +33,27 @@ def test_ignora_punto_y_coma_dentro_de_cadenas_y_dollar_quotes() -> None:
 def test_ignora_punto_y_coma_dentro_de_comentarios() -> None:
     statements = split_sql("-- nada;\nSELECT 1; -- fin\n")
     assert statements == ["-- nada;\nSELECT 1"]
+
+
+def test_revierte_la_transaccion_si_una_sentencia_falla() -> None:
+    class ConexionFalsa:
+        def __init__(self) -> None:
+            self.rolled_back = False
+
+        def execute(self, statement: str, _params: object = None) -> None:
+            if "FALLA" in statement:
+                raise RuntimeError("sentencia rechazada")
+
+        def rollback(self) -> None:
+            self.rolled_back = True
+
+    connection = ConexionFalsa()
+    try:
+        _execute_script(connection, "SELECT 1; SELECT FALLA;")
+    except RuntimeError:
+        assert connection.rolled_back
+    else:
+        raise AssertionError("debió propagar el error")
 
 
 def test_pares_up_down_cuando_existen() -> None:
