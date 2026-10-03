@@ -3,6 +3,11 @@
 .pgdata/
 pgdata/
 
+# Python de los scripts de migración
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
 # Sistema
 *.log
 .DS_Store
