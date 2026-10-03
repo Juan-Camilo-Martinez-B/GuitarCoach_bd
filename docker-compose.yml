@@ -1,1 +1,19 @@
-# Placeholder de la Fase 0. Sin servicios definidos.
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-guitarcoach}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-guitarcoach}
+      POSTGRES_DB: ${POSTGRES_DB:-guitarcoach}
+    ports:
+      - "${POSTGRES_PORT:-54329}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-guitarcoach} -d ${POSTGRES_DB:-guitarcoach}"]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - guitarcoach_pgdata:/var/lib/postgresql/data
+
+volumes:
+  guitarcoach_pgdata:

@@ -13,6 +13,14 @@ El audio del estudiante no se almacena. Solo viven aquí usuarios, canciones, in
 - Toda tabla lleva claves primarias, foráneas, `CHECK` cuando la regla cabe en el esquema, e índices para las consultas previstas.
 - La búsqueda de canciones usa `pg_trgm`. Los identificadores de usuario, intento, informe y trabajo usan `uuid` (`pgcrypto`).
 
+## Postgres local
+
+```bash
+docker compose up -d
+```
+
+El puerto por defecto es `54329`, para no chocar con un PostgreSQL ya instalado. La contraseña de desarrollo está en `.env.example`. No uses esos valores en producción.
+
 ## Estado
 
-Fase 0 más las convenciones de este documento. Las migraciones y el Postgres local llegan en los commits siguientes de la Fase 1.
+Fase 1 en curso: Postgres local listo. Los scripts y las migraciones llegan en los commits siguientes.
