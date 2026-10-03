@@ -47,7 +47,10 @@ Las semillas de desarrollo crean un alumno, una progresión de cuatro acordes y 
 
 ```powershell
 python scripts/seed.py
+python scripts/seed_demo.py
 ```
+
+`seed_demo.py` añade dos alumnos de demostración y una progresión con un intento. Se puede ejecutar otra vez sin duplicar filas. Los hash de contraseña son marcadores, no credenciales.
 
 ## Integración continua
 
