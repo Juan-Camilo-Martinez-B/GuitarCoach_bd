@@ -10,6 +10,9 @@ REQUIRED_TABLES = (
     "chord_metrics",
     "reports",
     "scrape_jobs",
+    "lesson_progress",
+    "study_checkins",
+    "song_studies",
     "schema_migrations",
 )
 
