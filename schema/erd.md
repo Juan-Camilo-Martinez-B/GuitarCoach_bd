@@ -12,6 +12,8 @@ erDiagram
     ATTEMPTS ||--o| REPORTS : genera
     USERS ||--o{ SCRAPE_JOBS : pide
     SONGS ||--o{ SCRAPE_JOBS : origina
+    USERS ||--o{ SONG_GUIDES : posee
+    SONGS ||--o{ SONG_GUIDES : practica
 
     USERS {
         uuid id
@@ -62,5 +64,14 @@ erDiagram
         text status
         text query
         int song_id
+    }
+    SONG_GUIDES {
+        uuid id
+        uuid owner_id
+        int song_id
+        text source_kind
+        text status
+        jsonb guide
+        text content_hash
     }
 ```
