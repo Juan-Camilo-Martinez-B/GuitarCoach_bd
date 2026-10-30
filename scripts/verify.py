@@ -13,6 +13,7 @@ REQUIRED_TABLES = (
     "lesson_progress",
     "study_checkins",
     "song_studies",
+    "song_guides",
     "schema_migrations",
 )
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## Sin publicar
+
+- Migración 0017: tabla `song_guides`, privada por dueño, idempotente por contenido y sin letra.
+
 ## 1.0.0
 
 Primera versión del esquema de GuitarCoach AI.
