@@ -72,7 +72,7 @@ def test_rechaza_un_informe_sin_la_forma_acordada() -> None:
             VALUES (
                 'dddddddd-dddd-dddd-dddd-dddddddddddd',
                 '{"diagnostico": "incompleto"}'::jsonb,
-                'gemini',
+                'groq',
                 'hash'
             )
             """
@@ -84,7 +84,7 @@ def test_rechaza_un_informe_sin_la_forma_acordada() -> None:
         VALUES (
             'dddddddd-dddd-dddd-dddd-dddddddddddd',
             %s::jsonb,
-            'gemini',
+            'groq',
             'hash'
         )
         """,

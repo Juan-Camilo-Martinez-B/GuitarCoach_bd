@@ -20,7 +20,7 @@ Cloud SQL no tiene una capa gratuita permanente: la instancia se cobra aunque no
 
 1. Créditos iniciales de GCP para Cloud SQL durante la evaluación, con alerta de presupuesto.
 2. PostgreSQL gestionado con capa gratuita, por ejemplo Neon o Supabase, conectado desde Cloud Run. El driver sigue siendo PostgreSQL 16 y las migraciones de esta carpeta se aplican igual.
-3. El tutor de IA usa la API de Gemini con capa gratuita en lugar de Vertex AI. Esa clave no pertenece a este repositorio; la configura el backend.
+3. El tutor de IA usa la API de Groq. Esa clave no pertenece a este repositorio; la configura el backend.
 
 Antes de elegir, revisa los límites vigentes. Las capas gratuitas cambian.
 
