@@ -89,3 +89,38 @@ def test_borrar_al_usuario_borra_sus_guias(owner) -> None:
     _insert(connection, owner_id)
     connection.execute("DELETE FROM users WHERE id = %s", (owner_id,))
     assert connection.execute("SELECT count(*) FROM song_guides").fetchone()[0] == 0
+
+
+def _tab_guide(connection, owner_id) -> str:
+    return connection.execute(
+        """
+        INSERT INTO song_guides (owner_id, title, artist, source_kind, guide, content_hash)
+        VALUES (%s, 'Riff', 'Ana', 'tablatura', %s::jsonb, 'hash-tab')
+        RETURNING id
+        """,
+        (owner_id, GUIDE),
+    ).fetchone()[0]
+
+
+def test_la_tablatura_se_guarda_aparte_y_se_borra_con_la_guia(owner) -> None:
+    connection, owner_id = owner
+    guide_id = _tab_guide(connection, owner_id)
+    connection.execute(
+        "INSERT INTO guide_tabs (guide_id, format, data) VALUES (%s, 'gp345', %s)",
+        (guide_id, b"\x18FICHIER GUITAR PRO v5.00"),
+    )
+    connection.execute("DELETE FROM song_guides WHERE id = %s", (guide_id,))
+    assert connection.execute("SELECT count(*) FROM guide_tabs").fetchone()[0] == 0
+
+
+def test_rechaza_una_tablatura_vacia_o_de_formato_desconocido(owner) -> None:
+    connection, owner_id = owner
+    guide_id = _tab_guide(connection, owner_id)
+    for tab_format, data in (("gp345", b""), ("pdf", b"%PDF")):
+        with pytest.raises(psycopg.Error):
+            connection.execute(
+                "INSERT INTO guide_tabs (guide_id, format, data) VALUES (%s, %s, %s)",
+                (guide_id, tab_format, data),
+            )
+        connection.rollback()
+        guide_id = _tab_guide(connection, owner_id)

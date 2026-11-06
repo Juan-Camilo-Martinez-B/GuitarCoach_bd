@@ -43,8 +43,16 @@ El puerto local es `54329`. La contraseña de desarrollo está en `.env.example`
 - Cada guía es de un solo dueño (`owner_id`) y se borra con él.
 - `UNIQUE (owner_id, content_hash)`: subir dos veces el mismo contenido no crea una copia.
 - `song_guides_no_lyrics`: el documento no puede traer la clave `lyrics`. La letra tiene derechos de autor y no se guarda.
-- `source_kind` dice de dónde salió (texto pegado, ChordPro, MusicXML, audio o editor) y `status` si es un borrador o ya está revisada.
+- `source_kind` dice de dónde salió (texto pegado, ChordPro, MusicXML, audio, editor o tablatura) y `status` si es un borrador o ya está revisada.
 - `song_id` enlaza la canción que usan los intentos y el informe.
+
+`journey_milestones` y `practice_days` (migración 0019) guardan los pasos de la ruta del principiante y los días con práctica. La clave primaria hace idempotente el aviso del navegador, y se borran con el usuario. Los logros no se guardan: la API los calcula.
+
+`guide_tabs` (migración 0018) guarda el archivo de la tablatura de una guía (Guitar Pro, MusicXML o MIDI) para volver a tocar la canción nota por nota:
+
+- Relación 1:1 con `song_guides`: va en su propia tabla para que listar las guías no arrastre los bytes, y se borra con la guía (`ON DELETE CASCADE`).
+- `guide_tabs_format_allowed`: solo `gp`, `gp345`, `gpx`, `midi` o `musicxml`. La API lo deduce de la firma del archivo, no de la extensión.
+- `guide_tabs_size`: entre 1 byte y 5 MB, el mismo límite que la API.
 
 Las pruebas de este repositorio ejecutan `reset()`, que borra el esquema. Córrelas contra una base aparte para no perder los datos locales:
 
