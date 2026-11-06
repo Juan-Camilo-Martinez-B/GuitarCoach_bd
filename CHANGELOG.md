@@ -2,6 +2,7 @@
 
 ## Sin publicar
 
+- Migración 0019: tablas `journey_milestones` y `practice_days` para guardar la ruta y la racha en la cuenta. Se borran con el usuario.
 - Migración 0018: tabla `guide_tabs` (archivo de tablatura 1:1 con la guía, hasta 5 MB, se borra con ella) y origen `tablatura` en `song_guides`.
 - Migración 0017: tabla `song_guides`, privada por dueño, idempotente por contenido y sin letra.
 

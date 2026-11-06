@@ -46,6 +46,8 @@ El puerto local es `54329`. La contraseña de desarrollo está en `.env.example`
 - `source_kind` dice de dónde salió (texto pegado, ChordPro, MusicXML, audio, editor o tablatura) y `status` si es un borrador o ya está revisada.
 - `song_id` enlaza la canción que usan los intentos y el informe.
 
+`journey_milestones` y `practice_days` (migración 0019) guardan los pasos de la ruta del principiante y los días con práctica. La clave primaria hace idempotente el aviso del navegador, y se borran con el usuario. Los logros no se guardan: la API los calcula.
+
 `guide_tabs` (migración 0018) guarda el archivo de la tablatura de una guía (Guitar Pro, MusicXML o MIDI) para volver a tocar la canción nota por nota:
 
 - Relación 1:1 con `song_guides`: va en su propia tabla para que listar las guías no arrastre los bytes, y se borra con la guía (`ON DELETE CASCADE`).

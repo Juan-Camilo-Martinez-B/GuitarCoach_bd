@@ -15,6 +15,8 @@ REQUIRED_TABLES = (
     "song_studies",
     "song_guides",
     "guide_tabs",
+    "journey_milestones",
+    "practice_days",
     "schema_migrations",
 )
 
