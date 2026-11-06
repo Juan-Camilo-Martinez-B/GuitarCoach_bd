@@ -14,6 +14,7 @@ REQUIRED_TABLES = (
     "study_checkins",
     "song_studies",
     "song_guides",
+    "guide_tabs",
     "schema_migrations",
 )
 

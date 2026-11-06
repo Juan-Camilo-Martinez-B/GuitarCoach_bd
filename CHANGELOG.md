@@ -2,6 +2,7 @@
 
 ## Sin publicar
 
+- Migración 0018: tabla `guide_tabs` (archivo de tablatura 1:1 con la guía, hasta 5 MB, se borra con ella) y origen `tablatura` en `song_guides`.
 - Migración 0017: tabla `song_guides`, privada por dueño, idempotente por contenido y sin letra.
 
 ## 1.0.0
