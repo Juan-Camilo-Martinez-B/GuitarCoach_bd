@@ -34,13 +34,14 @@ def missing_objects(connection: object) -> list[str]:
         if row is None:
             missing.append(f"extension:{extension}")
     for table in REQUIRED_TABLES:
+        schema = "public" if table == "schema_migrations" else "guitarcoach"
         row = connection.execute(  # type: ignore[attr-defined]
             """
             SELECT 1
             FROM information_schema.tables
-            WHERE table_schema = 'public' AND table_name = %s
+            WHERE table_schema = %s AND table_name = %s
             """,
-            (table,),
+            (schema, table),
         ).fetchone()
         if row is None:
             missing.append(f"table:{table}")

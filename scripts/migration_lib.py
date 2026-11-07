@@ -8,11 +8,25 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATIONS_DIR = ROOT / "migrations"
-HISTORY_TABLE = "schema_migrations"
+HISTORY_TABLE = "public.schema_migrations"
+
+
+def _load_dotenv() -> None:
+    """Lee `.env` sin pisar una variable que ya venga del entorno."""
+    env_path = ROOT / ".env"
+    if not env_path.is_file():
+        return
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+        key, value = stripped.split("=", 1)
+        os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
 
 
 def database_url() -> str:
     """Devuelve la URL libpq. Acepta el esquema asyncpg del backend y lo normaliza."""
+    _load_dotenv()
     url = os.environ.get("DATABASE_URL", "").strip()
     if not url:
         raise SystemExit("DATABASE_URL no está definida. Copia .env.example a .env.")
@@ -178,7 +192,11 @@ def reset(connection: object) -> None:
 def connect() -> object:
     import psycopg
 
-    return psycopg.connect(database_url())
+    connection = psycopg.connect(database_url())
+    # Las tablas de la app viven en guitarcoach. public queda para extensiones e historial.
+    connection.execute("SET search_path TO guitarcoach, public")
+    connection.commit()
+    return connection
 
 
 def _ensure_history(connection: object) -> None:
